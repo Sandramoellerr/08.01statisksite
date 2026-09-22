@@ -1,0 +1,195 @@
+/* ============================
+   GENERELT
+============================ */
+
+img {
+  max-width: 100%;
+}
+
+/* ============================
+   PRODUKTLISTE / KORT-GRID
+   (mobil-first: dette er standarden)
+============================ */
+
+.product_list_container a {
+  display: contents;
+}
+
+.product_list_container {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 75%;
+  grid-template-rows: auto auto auto auto auto;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  margin-inline: 1rem;
+  margin-top: 3rem;
+  padding-bottom: 0.5rem;
+}
+
+.product {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 5;
+  position: relative;
+  background: none;
+  scroll-snap-align: start;
+}
+
+.product img {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  object-position: top;
+  background-color: #e8e4da;
+}
+
+.product h3 {
+  font-size: var(--h3);
+  font-weight: 700;
+  color: var(--sort-tekst);
+  margin-top: 0.75rem;
+  line-height: 1.3;
+}
+
+/* alle tekster i kortet ser sådan ud som udgangspunkt */
+.product p {
+  color: var(--lysebrun-tekst);
+  font-size: var(--p);
+  margin-top: 2px;
+}
+
+/* ============================
+   PRISER
+============================ */
+
+.product div p {
+  margin: 0;
+  font-weight: 600;
+  font-size: var(--p);
+  color: var(--sort-tekst);
+}
+
+.product .førpris {
+  text-decoration: line-through;
+  font-weight: 400;
+  color: var(--lysebrun-tekst);
+}
+
+.product .efterpris {
+  position: absolute;
+  top: 384px;
+  right: 0.75rem;
+  margin: 0;
+  padding: 4px 10px;
+  background: #d64545;
+  color: var(--hvid-farve);
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 2px;
+}
+
+/* ============================
+   UDSOLGT-STEMPEL
+============================ */
+
+.product .soldout_tag {
+  position: absolute;
+  top: 210px;
+  left: 50%;
+  margin: 0;
+  padding: 0;
+  background: none;
+  color: var(--sort-tekst);
+  font-size: 2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transform: translate(-50%, -50%) rotate(-15deg);
+  visibility: hidden;
+}
+
+.soldout .soldout_tag {
+  visibility: visible;
+}
+
+.soldout img {
+  opacity: 50%;
+}
+
+/* ============================
+   DEN FÆLLES KNAP - samme stil som på de andre sider
+============================ */
+
+.card_btn {
+  display: inline-block;
+  padding: 14px 48px;
+  background: var(--primary-cta-farve);
+  color: var(--hvid-farve);
+  font-style: italic;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 2px;
+}
+
+.card_btn:hover {
+  background: rgb(139, 92, 92);
+}
+
+.product .card_btn {
+  display: inline-block;
+  justify-self: start;
+  align-self: start;
+}
+
+/* ============================
+   TEASER TIL FOOTER
+============================ */
+
+.lokation {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  background-color: var(--lys-gul-farve);
+}
+
+.lokation h2 {
+  margin-bottom: 1rem;
+}
+
+.lokation p {
+  line-height: 180%;
+}
+
+/* ============================
+   DESKTOP
+============================ */
+
+@media (min-width: 800px) {
+  .product_list_container {
+    grid-auto-flow: unset;
+    grid-auto-columns: unset;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    overflow-x: visible;
+    scroll-snap-type: none;
+    margin-inline: 2rem;
+    margin-top: 6rem;
+  }
+
+  .product img {
+    height: 280px;
+  }
+
+  .product .efterpris {
+    top: 244px;
+  }
+
+  .product .soldout_tag {
+    top: 140px;
+  }
+
+  .lokation {
+    padding: 5rem;
+  }
+}

@@ -3,62 +3,62 @@
 ============================ */
 
 img {
-  max-width: 100%;
+  max-width: 100%; /* Billeder må aldrig blive bredere end den boks, de ligger i */
 }
 
 /* ============================
    PRODUKTLISTE / KORT-GRID
-   (mobil-first: dette er standarden)
+  
 ============================ */
 
 .product_list_container a {
-  display: contents;
+  display: contents; /* <a>-tagget "forsvinder" fra layoutet, så dets børn opfører sig som om de lå direkte i griddet. Linket virker stadig. */
 }
 
 .product_list_container {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 75%;
-  grid-template-rows: auto auto auto auto auto;
-  gap: 1.5rem;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  margin-inline: 1rem;
-  margin-top: 3rem;
-  padding-bottom: 0.5rem;
+  display: grid; /* Gør containeren til et grid */
+  grid-auto-flow: column; /* Nye kort lægges ved siden af hinanden (vandret) i stedet for under hinanden */
+  grid-auto-columns: 75%; /* Hvert kort fylder 75% af skærmen, så man kan se lidt af det næste kort */
+  grid-template-rows: auto auto auto auto auto; /* 5 rækker (billede, titel, tekst, pris, knap), højden passer sig selv */
+  gap: 1.5rem; /* Afstand mellem kortene */
+  overflow-x: auto; /* Hvis kortene ikke kan være der, kan man scrolle vandret */
+  scroll-snap-type: x mandatory; /* Når man scroller, "klikker" den på plads ved et kort */
+
+  margin-inline: 1rem; /* Luft i venstre og højre side */
+  margin-top: 3rem; /* Luft over listen */
+  padding-bottom: 0.5rem; /* Lidt plads i bunden, så scrollbaren ikke rammer kortene */
 }
 
 .product {
   display: grid;
-  grid-template-rows: subgrid;
-  grid-row: span 5;
-  position: relative;
-  background: none;
-  scroll-snap-align: start;
+  grid-template-rows: subgrid; /* Kortet bruger forælderens rækker, så titler, priser og knapper står på linje på tværs af alle kort */
+  grid-row: span 5; /* Kortet fylder alle 5 rækker */
+  position: relative; /* Gør kortet til "ankerpunkt" for elementer med position: absolute (tilbudsmærke og udsolgt) */
+  background: none; /* Ingen baggrundsfarve */
+  scroll-snap-align: start; /* Når man scroller, stopper kortets venstre kant ved starten */
 }
 
 .product img {
-  width: 100%;
-  height: 420px;
-  object-fit: cover;
-  object-position: top;
-  background-color: #e8e4da;
+  width: 100%; /* Billedet fylder hele kortets bredde */
+  height: 420px; /* Fast højde, så alle billeder er lige høje */
+  object-fit: cover; /* Billedet fylder boksen uden at blive strakt, men kan blive beskåret */
+  object-position: top; /* Beskær fra bunden, så toppen af billedet altid kan ses */
+  background-color: #e8e4da; /* Beige farve, der vises mens billedet loader */
 }
 
 .product h3 {
-  font-size: var(--h3);
-  font-weight: 700;
+  font-size: var(--h3); /* Bruger en variabel fra :root, så alle h3 har samme størrelse */
+  font-weight: 700; /* Fed skrift */
   color: var(--sort-tekst);
-  margin-top: 0.75rem;
-  line-height: 1.3;
+  margin-top: 0.75rem; /* Luft mellem billede og titel */
+  line-height: 1.3; /* Linjeafstand, hvis titlen går over to linjer */
 }
 
-/* alle tekster i kortet ser sådan ud som udgangspunkt */
+/* Standardudseende for al tekst i kortet */
 .product p {
   color: var(--lysebrun-tekst);
   font-size: var(--p);
-  margin-top: 2px;
+  margin-top: 2px; /* Lidt luft over teksten */
 }
 
 /* ============================
@@ -66,29 +66,31 @@ img {
 ============================ */
 
 .product div p {
-  margin: 0;
-  font-weight: 600;
+  /* Tekst inde i en <div> i kortet (altså priserne) */
+  margin: 0; /* Fjerner browserens standard-margin */
+  font-weight: 600; /* Halvfed */
   font-size: var(--p);
   color: var(--sort-tekst);
 }
 
 .product .førpris {
-  text-decoration: line-through;
-  font-weight: 400;
+  text-decoration: line-through; /* Streger den gamle pris over */
+  font-weight: 400; /* Normal tykkelse, så den virker mindre vigtig */
   color: var(--lysebrun-tekst);
 }
 
 .product .efterpris {
-  position: absolute;
-  top: 384px;
-  right: 0.75rem;
+  /* Det røde tilbudsmærke på billedet */
+  position: absolute; /* Tages ud af det normale flow og placeres i forhold til .product */
+  top: 384px; /* 384px fra toppen af kortet, altså nederst på billedet (420px høj) */
+  right: 0.75rem; /* Lidt inde fra højre kant */
   margin: 0;
-  padding: 4px 10px;
-  background: #d64545;
-  color: var(--hvid-farve);
-  font-size: 0.7rem;
+  padding: 4px 10px; /* Luft inde i mærket (top/bund og venstre/højre) */
+  background: #d64545; /* Rød baggrund */
+  color: var(--hvid-farve); /* Hvid tekst */
+  font-size: 0.7rem; /* Lille tekst */
   font-weight: 600;
-  border-radius: 2px;
+  border-radius: 2px; /* Let afrundede hjørner */
 }
 
 /* ============================
@@ -96,27 +98,27 @@ img {
 ============================ */
 
 .product .soldout_tag {
-  position: absolute;
-  top: 210px;
-  left: 50%;
+  position: absolute; /* Placeres oven på billedet */
+  top: 210px; /* Midt på billedet (420 / 2 = 210) */
+  left: 50%; /* Venstre kant starter midt i kortet */
   margin: 0;
   padding: 0;
   background: none;
   color: var(--sort-tekst);
-  font-size: 2rem;
+  font-size: 2rem; /* Stor tekst */
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transform: translate(-50%, -50%) rotate(-15deg);
-  visibility: hidden;
+  text-transform: uppercase; /* Laver teksten om til STORE BOGSTAVER */
+  letter-spacing: 1px; /* Lidt ekstra afstand mellem bogstaverne */
+  transform: translate(-50%, -50%) rotate(-15deg); /* Flytter teksten halvdelen af sin egen størrelse tilbage, så den står helt i midten. Drejer den derefter 15° som et stempel */
+  visibility: hidden; /* Skjult som standard, men fylder stadig sin plads */
 }
 
 .soldout .soldout_tag {
-  visibility: visible;
+  visibility: visible; /* Hvis kortet har klassen "soldout", bliver stemplet synligt */
 }
 
 .soldout img {
-  opacity: 50%;
+  opacity: 50%; /* Udsolgte produkter får et halvt gennemsigtigt billede */
 }
 
 /* ============================
@@ -124,24 +126,24 @@ img {
 ============================ */
 
 .card_btn {
-  display: inline-block;
-  padding: 14px 48px;
-  background: var(--primary-cta-farve);
+  display: inline-block; /* Opfører sig som tekst på linjen, men kan få padding og bredde */
+  padding: 14px 48px; /* Gør knappen større: 14px top/bund, 48px sider */
+  background: var(--primary-cta-farve); /* CTA = "call to action", hovedknappens farve */
   color: var(--hvid-farve);
-  font-style: italic;
+  font-style: italic; /* Kursiv tekst */
   text-align: center;
-  text-decoration: none;
+  text-decoration: none; /* Fjerner understregningen, som links har som standard */
   border-radius: 2px;
 }
 
 .card_btn:hover {
-  background: rgb(139, 92, 92);
+  background: rgb(139, 92, 92); /* Mørkere farve, når musen er over knappen */
 }
 
 .product .card_btn {
   display: inline-block;
-  justify-self: start;
-  align-self: start;
+  justify-self: start; /* I griddet: knappen lægger sig til venstre i stedet for at fylde hele bredden */
+  align-self: start; /* Knappen lægger sig i toppen af sin række i stedet for at blive strakt i højden */
 }
 
 /* ============================
@@ -149,17 +151,17 @@ img {
 ============================ */
 
 .lokation {
-  text-align: center;
-  padding: 3rem 1.5rem;
+  text-align: center; /* Centrerer al tekst */
+  padding: 3rem 1.5rem; /* Luft indeni: 3rem top/bund, 1.5rem sider */
   background-color: var(--lys-gul-farve);
 }
 
 .lokation h2 {
-  margin-bottom: 1rem;
+  margin-bottom: 1rem; /* Luft mellem overskrift og tekst */
 }
 
 .lokation p {
-  line-height: 180%;
+  line-height: 180%; /* Større linjeafstand, så teksten er nemmere at læse */
 }
 
 /* ============================
@@ -168,28 +170,28 @@ img {
 
 @media (min-width: 800px) {
   .product_list_container {
-    grid-auto-flow: unset;
-    grid-auto-columns: unset;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    overflow-x: visible;
-    scroll-snap-type: none;
-    margin-inline: 2rem;
-    margin-top: 6rem;
+    grid-auto-flow: unset; /* Slår den vandrette mobil-rækkefølge fra */
+    grid-auto-columns: unset; /* Slår 75%-bredden fra */
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Laver så mange kolonner, der kan være. Hver er mindst 220px og deler resten af pladsen ligeligt (1fr) */
+    overflow-x: visible; /* Ingen vandret scroll mere */
+    scroll-snap-type: none; /* Slår "klik på plads" fra */
+    margin-inline: 2rem; /* Mere luft i siderne */
+    margin-top: 6rem; /* Mere luft over listen */
   }
 
   .product img {
-    height: 280px;
+    height: 280px; /* Mindre billeder, fordi kortene er smallere på desktop */
   }
 
   .product .efterpris {
-    top: 244px;
+    top: 244px; /* Flyttes op, så mærket stadig sidder nederst på det mindre billede */
   }
 
   .product .soldout_tag {
-    top: 140px;
+    top: 140px; /* Nyt midtpunkt (280 / 2 = 140) */
   }
 
   .lokation {
-    padding: 5rem;
+    padding: 5rem; /* Mere luft på store skærme */
   }
 }

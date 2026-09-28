@@ -1,42 +1,61 @@
 "use strict";
+// "use strict" = JavaScript melder fejl i stedet for at ignorere dem
 
-// Læser beskeden efter "?" i adressen (fx ?season=Summer)
-// window.location = adressen vi er på, .search = delen efter "?"
+// TRIN 1: LÆS SÆSONEN FRA ADRESSEN
+// Adressen er fx productlist.html?season=Summer
+// window.location.search = delen efter "?", altså "?season=Summer"
+// URLSearchParams = gør den del læsbar for JavaScript
 const param = new URLSearchParams(window.location.search);
 
-// Henter sæsonen fra adressen
+// param.get("season") = henter værdien efter "season=", fx "Summer"
+// Ordet skal være det samme som i linket på forsiden (?season=)
+// Står der intet ?season= i adressen, bliver den null
 const selectedseason = param.get("season");
 console.log("selectedseason", selectedseason);
-// API-adressen, henter produkter fra den valgte sæson
+
+// TRIN 2: BYG API-ADRESSEN
+// ${selectedseason} sætter sæsonen ind i adressen (virker kun i backticks ` `)
+// Resultat fx: https://kea-alt-del.dk/t7/api/products?season=Summer
 const productURL = `https://kea-alt-del.dk/t7/api/products?season=${selectedseason}`;
 
-// Kassen i HTML'en, hvor kortene skal stå
+// TRIN 3: FIND KASSEN I HTML'EN
+// Finder <div class="product_list_container"> i HTML'en
+// listContainer = et navn jeg selv har valgt, det findes kun i JS
 const listContainer = document.querySelector(".product_list_container");
 
-// Henter data fra API'et og sender det videre til showProducts
+// TRIN 4: HENT DATA FRA API'ET
+// fetch(url) = spørg API'et efter produkterne
+// .then = vent på svaret, og gør så det næste
+// response.json() = pak svaret ud, så det bliver et array (en liste med produkter)
+// showProducts(data) = send listen videre, så den kan vises
 function getData(url) {
   fetch(url).then((response) => {
-    // Laver svaret om fra JSON til et array
     response.json().then((data) => {
       showProducts(data);
     });
   });
 }
 
-// Viser alle produkterne på siden
+// TRIN 5: VIS PRODUKTERNE PÅ SIDEN
+// products = listen (arrayet) med alle produkter fra API'et
 function showProducts(products) {
-  // Til fejlfinding i konsollen
+  // products[0] = det første produkt i listen (man tæller fra 0)
+  // products.length = hvor mange produkter der er i listen
   console.log("First product", products[0]);
   console.log("Number of products", products.length);
 
-  // Tømmer kassen først
+  // Tømmer kassen, så der ikke ligger noget gammelt i den
   listContainer.innerHTML = "";
 
-  // Laver et kort for hvert produkt
+  // forEach = gør det samme for hvert produkt i listen, et ad gangen
+  // product = det produkt, vi er ved lige nu
   products.forEach((product) => {
-    // ${} indsætter data. ? : betyder "hvis ja : hvis nej"
-    // Udsolgt: får klassen "soldout" og et "UDSOLGT"-mærke
-    // Rabat: viser ny pris og rabatprocent
+    // += = læg et nyt kort oven i dem, der allerede står der
+    // ${product.feltnavn} = sæt data fra produktet ind i HTML'en
+    // ? : = en kort if/else: "betingelse ? hvis ja : hvis nej"
+    //   product.soldout ? "soldout" : "" → er den udsolgt, får den klassen "soldout", ellers ingenting
+    //   product.discount ? ... : "" → har den rabat, vises ny pris og rabat-%, ellers ingenting
+    // Linket får produktets id med (?id=1556), så produktsiden ved hvilket produkt den skal vise
     listContainer.innerHTML += `<article class="product ${product.soldout ? "soldout" : ""}">
       <img src="https://kea-alt-del.dk/t7/images/webp/640/${product.id}.webp" alt="${product.productdisplayname}" />
       <h3>${product.productdisplayname}</h3>
@@ -54,10 +73,18 @@ function showProducts(products) {
   });
 }
 
-// Starter det hele
+// TRIN 6: START DET HELE
+// En funktion gør ingenting, før den bliver kaldt
+// Kæden: getData → fetch → json → showProducts → produkterne står på siden
 getData(productURL);
 
-// Regner prisen efter rabat (fx 500 kr - 20% = 400 kr)
+// EKSTRA: REGN PRISEN EFTER RABAT
+// return = sender resultatet tilbage til der, hvor funktionen blev kaldt
+// Math.round = runder af til et helt tal
+// Eksempel: 500 kr og 20 % rabat
+//   100 - 20 = 80
+//   500 * 80 = 40000
+//   40000 / 100 = 400 kr
 function getDiscountPrice(origianlPrice, discount) {
   return Math.round((origianlPrice * (100 - discount)) / 100);
 }

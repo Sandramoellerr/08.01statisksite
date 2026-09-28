@@ -1,54 +1,58 @@
 "use strict";
-/* "use strict" = en streng lærer
-den siger med det samme til, hvis du laver en fejl */
+// "use strict" = JavaScript melder fejl i stedet for at ignorere dem
 
+// console.log = skriv en besked i konsollen
+// Bare for at tjekke, at filen bliver indlæst
 console.log("hej");
-/* console.log = skriv en besked i konsollen
-bare for at tjekke, at filen virker */
 
-/* productUrl = adressen, hvor dataen bor på internettet
-det er ligesom en adresse på et hus, vi skal hen og hente noget fra */
+// TRIN 1: API-ADRESSEN
+// Her ligger listen over sæsoner på internettet
+// Svaret er: [{season:"Fall"}, {season:"Spring"}, {season:"Summer"}, {season:"Winter"}]
 const productUrl = "https://kea-alt-del.dk/t7/api/seasons";
 
-/* seasonsList = find kassen i HTML, hvor kortene skal stå
-. betyder "find den med denne class" */
+// TRIN 2: FIND KASSEN I HTML'EN
+// Finder <div class="grid_1-1-1-1"> i HTML'en
+// . betyder "find den med denne class"
+// seasonsList = et navn jeg selv har valgt, det findes kun i JS
 const seasonsList = document.querySelector(".grid_1-1-1-1");
 
-/* getData() = sig "GO!" og start med at hente data
-(man kan godt kalde den, før den er skrevet længere nede) */
+// TRIN 6: START DET HELE
+// Man må godt kalde en funktion, før den er skrevet længere nede i filen
+// Kæden: getData → fetch → json → showData → kortene står på siden
 getData();
 
-/* FUNCTION = en opskrift
-den gør ingenting, før man kalder den med getData() */
+// TRIN 3: HENT DATA FRA API'ET
+// En funktion gør ingenting, før den bliver kaldt med getData()
+// fetch(productUrl) = spørg API'et efter sæsonerne
+// .then = vent på svaret, og gør så det næste
+// result.json() = pak svaret ud, så det bliver et array (en liste)
+// showData(data) = send listen videre, så den kan vises
 function getData() {
-  /* fetch = gå hen til adressen og hent dataen
-  .then = NÅR du er kommet tilbage, så gør det næste
-  result.json() = pak dataen ud, så JavaScript kan forstå den
-  showData(data) = giv den udpakkede data videre til showData */
   fetch(productUrl).then((result) => result.json().then((data) => showData(data)));
 }
 
-/* showData = opskriften, der viser dataen på siden
-"data" = listen med sæsoner, vi lige har hentet */
+// TRIN 4: VIS SÆSONERNE PÅ SIDEN
+// data = listen med sæsoner fra API'et
 function showData(data) {
   console.log("DATA", data);
 
-  /* tøm kassen på siden, så der ikke ligger noget gammelt i den */
+  // Tømmer kassen, så der ikke ligger noget gammelt i den
   seasonsList.innerHTML = "";
 
-  /* myInnerHTML = en tom pose, som vi fylder kort i
-  let og ikke const, fordi posen bliver ændret hele tiden */
+  // myInnerHTML = en tom tekst, som vi fylder kort i
+  // let og ikke const, fordi den bliver ændret for hver sæson
   let myInnerHTML = "";
 
-  /* FOREACH = lav et kort for hver sæson, et ad gangen
-  "season" = den sæson, vi er ved lige nu */
+  // forEach = gør det samme for hver sæson i listen, en ad gangen
+  // season = den sæson, vi er ved lige nu, fx {season: "Summer"}
   data.forEach((season) => {
     console.log(season);
 
-    /* += = læg et nyt kort oveni i posen
-    `` (backticks) = så kan man skrive HTML over flere linjer
-    ${season.season} = sæt sæsonens navn ind her, fx "Summer"
-    linket får sæsonen med (?seasons=Summer), så produktlisten ved hvilken kollektion den skal vise */
+    // += = læg et nyt kort oven i dem, der allerede er i myInnerHTML
+    // ` ` (backticks) = så kan man skrive HTML over flere linjer og bruge ${ }
+    // ${season.season} = sæt sæsonens navn ind her, fx "Summer"
+    // Linket får sæsonen med (?season=Summer), så produktlisten ved hvilken kollektion den skal vise
+    // Ordet "season" skal være det samme som i param.get("season") i list.js
     myInnerHTML += `<article class="card">
                 <img class="card_img" src="img/Skærmbillede 2026-09-21 kl. 19.47.49.png" alt="Sommer kollektion" />
                 <div class="card_body">
@@ -58,6 +62,7 @@ function showData(data) {
             </article>`;
   });
 
-  /* hæld hele posen med kort ind i kassen på siden, alt på én gang */
+  // TRIN 5: SÆT KORTENE IND PÅ SIDEN
+  // Alle kortene bliver sat ind i kassen på én gang
   seasonsList.innerHTML = myInnerHTML;
 }

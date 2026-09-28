@@ -54,8 +54,7 @@ function showData(data) {
                 <div class="card_body">
                     <h3 class="card_titel">${season.season} kollektion</h3>
                     <p class="card_tekst">Lette silhuetter og bløde farver til de varme dage.</p>
-                    <a class="card_btn" href="productlist.html?seasons=${season.season}">Se kollektion</a>
-                </div>
+                    <a class="card_btn" href="productlist.html?season=${season.season}">Se kollektion</a>                </div>
             </article>`;
   });
 

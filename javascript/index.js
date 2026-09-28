@@ -47,13 +47,14 @@ function showData(data) {
 
     /* += = læg et nyt kort oveni i posen
     `` (backticks) = så kan man skrive HTML over flere linjer
-    ${season.season} = sæt sæsonens navn ind her, fx "Summer" */
+    ${season.season} = sæt sæsonens navn ind her, fx "Summer"
+    linket får sæsonen med (?seasons=Summer), så produktlisten ved hvilken kollektion den skal vise */
     myInnerHTML += `<article class="card">
                 <img class="card_img" src="img/Skærmbillede 2026-09-21 kl. 19.47.49.png" alt="Sommer kollektion" />
                 <div class="card_body">
                     <h3 class="card_titel">${season.season} kollektion</h3>
                     <p class="card_tekst">Lette silhuetter og bløde farver til de varme dage.</p>
-                    <a class="card_btn" href="product.html">Se kollektion</a>
+                    <a class="card_btn" href="productlist.html?seasons=${season.season}">Se kollektion</a>
                 </div>
             </article>`;
   });

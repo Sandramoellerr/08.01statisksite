@@ -1,63 +1,63 @@
 "use strict";
 
-/* productURL = adressen, hvor produkterne bor på internettet */
-const productUrl = "https://kea-alt-del.dk/t7/api/products";
+// Læser beskeden efter "?" i adressen (fx ?season=Summer)
+// window.location = adressen vi er på, .search = delen efter "?"
+const param = new URLSearchParams(window.location.search);
 
-/* listContainer = find kassen i HTML, hvor kortene skal stå */
+// Henter sæsonen fra adressen
+const selectedseason = param.get("season");
+console.log("selectedseason", selectedseason);
+// API-adressen, henter produkter fra den valgte sæson
+const productURL = `https://kea-alt-del.dk/t7/api/products?season=${selectedseason}`;
+
+// Kassen i HTML'en, hvor kortene skal stå
 const listContainer = document.querySelector(".product_list_container");
 
-/* GETDATA = opskriften, der henter dataen */
+// Henter data fra API'et og sender det videre til showProducts
 function getData(url) {
   fetch(url).then((response) => {
+    // Laver svaret om fra JSON til et array
     response.json().then((data) => {
-      console.log("data", data);
       showProducts(data);
     });
   });
 }
 
-/* SHOWPRODUCTS = opskriften, der viser produkterne på siden */
+// Viser alle produkterne på siden
 function showProducts(products) {
+  // Til fejlfinding i konsollen
   console.log("First product", products[0]);
   console.log("Number of products", products.length);
 
-  /* tøm kassen på siden, før vi fylder nye kort i */
+  // Tømmer kassen først
   listContainer.innerHTML = "";
 
+  // Laver et kort for hvert produkt
   products.forEach((product) => {
-    /* += = læg et nyt kort oveni det, der allerede er på siden
-    ${ } står MELLEM > og <, så teksten kommer frem på siden */
-
-    /*${product.soldout ? "soldout" : ""}"
-Det er en kort if/else på én linje
-spørgsmål ? hvis ja : hvis nej
-er produktet udsolgt? ja -> skriv "soldout", nej -> skriv ingenting "" */
-
+    // ${} indsætter data. ? : betyder "hvis ja : hvis nej"
+    // Udsolgt: får klassen "soldout" og et "UDSOLGT"-mærke
+    // Rabat: viser ny pris og rabatprocent
     listContainer.innerHTML += `<article class="product ${product.soldout ? "soldout" : ""}">
       <img src="https://kea-alt-del.dk/t7/images/webp/640/${product.id}.webp" alt="${product.productdisplayname}" />
       <h3>${product.productdisplayname}</h3>
       <p>${product.brandname} - ${product.category}</p>
       <div>
-        <p>${product.price} kr</p>
+        ${product.discount ? "<p>" + getDiscountPrice(product.price, product.discount) + " kr</p>" : ""}
+        <p>${product.price} kr ${product.discount ? " <em>-" + product.discount + "%</em>" : ""}</p>
+      
       </div>
+      
+      
+      ${product.soldout ? "<p class='soldout_tag'>UDSOLGT</p>" : ""}
       <a class="card_btn" href="product.html?id=${product.id}">Shop nu</a>
     </article>`;
   });
 }
 
-/* sig "GO!" */
-getData(productUrl);
-/* DE BETYDER DET SAMME DE TO NEDESTÅENDE 
- 
- soldOutClass = en tom kasse til en class
-    HVIS produktet er udsolgt, putter vi "soldout" i den
-    // ellers forbliver den tom "" */
-// let soldOutClass = "";
-// if (product.soldout) {
-//   soldOutClass = "soldout";
-// }
+// Starter det hele
+getData(productURL);
 
-/*${product.soldout ? "soldout" : ""}"
-Det er en kort if/else på én linje
-spørgsmål ? hvis ja : hvis nej
-er produktet udsolgt? ja -> skriv "soldout", nej -> skriv ingenting "" */
+// Regner prisen efter rabat (fx 500 kr - 20% = 400 kr)
+function getDiscountPrice(origianlPrice, discount) {
+  return Math.round((origianlPrice * (100 - discount)) / 100);
+}

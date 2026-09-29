@@ -66,3 +66,125 @@ function showData(data) {
   // Alle kortene bliver sat ind i kassen på én gang
   seasonsList.innerHTML = myInnerHTML;
 }
+
+/*
+==========================================================
+  INDEX.JS: FRA STATISK TIL DYNAMISK, 7 TRIN
+  index.html → index.js → API: /api/seasons
+==========================================================
+
+STATISK  = jeg har selv skrevet alt indholdet i HTML'en
+DYNAMISK = JavaScript henter indholdet fra et API og skriver HTML'en for mig
+
+----------------------------------------------------------
+TRIN 1: BYG SIDEN STATISK FØRST
+----------------------------------------------------------
+Jeg skrev ét kort i index.html og stylede det med CSS.
+Det kort er min SKABELON, altså det JavaScript skal gentage.
+
+  <article class="card">
+      <img class="card_img" src="img/Skærmbillede 2026-09-21 kl. 19.47.49.png" alt="Sommer kollektion" />
+      <div class="card_body">
+          <h3 class="card_titel">Sommer kollektion</h3>
+          <p class="card_tekst">Lette silhuetter og bløde farver til de varme dage.</p>
+          <a class="card_btn" href="product.html">Se kollektion</a>
+      </div>
+  </article>
+
+----------------------------------------------------------
+TRIN 2: LAV EN JS-FIL OG FORBIND DEN
+----------------------------------------------------------
+I <head> i index.html:
+  <script src="javascript/index.js" defer></script>
+defer = JS venter, til HTML'en er læst (ellers finder querySelector intet)
+
+Test øverst i index.js:
+  console.log("hej");      → står der "hej" i konsollen, er filen forbundet
+
+----------------------------------------------------------
+TRIN 3: TOM KASSE I HTML'EN + UDKOMMENTÉR KORTENE
+----------------------------------------------------------
+I index.html:
+  <div class="grid_1-1-1-1">
+      <!-- gamle kort, udkommenteret -->
+  </div>
+Kassen (div'en) skal BLIVE. Kun kortene indeni udkommenteres.
+
+I index.js finder jeg kassen:
+  const seasonsList = document.querySelector(".grid_1-1-1-1");
+seasonsList = et navn jeg selv har valgt, det findes kun i JS
+
+----------------------------------------------------------
+TRIN 4: FIND API-ADRESSEN
+----------------------------------------------------------
+  const productUrl = "https://kea-alt-del.dk/t7/api/seasons";
+
+Svaret:
+  [{"season":"Fall"},{"season":"Spring"},{"season":"Summer"},{"season":"Winter"}]
+Starter med [ → en LISTE → brug forEach
+Felt jeg bruger: season
+
+----------------------------------------------------------
+TRIN 5: HENT DATA (motoren)
+----------------------------------------------------------
+  getData();                                  // start det hele
+
+  function getData() {
+    fetch(productUrl).then((result) => result.json().then((data) => showData(data)));
+  }
+
+fetch(productUrl) = spørg API'et
+result.json()     = pak svaret ud
+showData(data)    = send listen videre
+
+----------------------------------------------------------
+TRIN 6: KOPIÉR KORTET IND I JS OG SÆT DATA IND
+----------------------------------------------------------
+  function showData(data) {
+    seasonsList.innerHTML = "";               // tøm kassen
+    let myInnerHTML = "";                     // tom tekst, som vi fylder kort i
+
+    data.forEach((season) => {                // for hver sæson
+      myInnerHTML += `<article class="card">
+          <img class="card_img" src="img/Skærmbillede 2026-09-21 kl. 19.47.49.png" alt="Sommer kollektion" />
+          <div class="card_body">
+              <h3 class="card_titel">${season.season} kollektion</h3>
+              <p class="card_tekst">Lette silhuetter og bløde farver til de varme dage.</p>
+              <a class="card_btn" href="productlist.html?season=${season.season}">Se kollektion</a>
+          </div>
+      </article>`;                            // husk ` til sidst
+    });
+
+    seasonsList.innerHTML = myInnerHTML;      // sæt alle kort ind på én gang
+  }
+
+  Statisk (før)          →  Dynamisk (efter)
+  Sommer kollektion      →  ${season.season} kollektion
+  href="product.html"    →  href="productlist.html?season=${season.season}"
+
+Klasserne er de samme som i HTML'en, så CSS'en virker stadig.
+${ } virker KUN i backticks ` `, ikke i " ".
+
+----------------------------------------------------------
+TRIN 7: FORBIND SIDERNE MED URL-PARAMETRE
+----------------------------------------------------------
+Index er siden FØR, så den laver linket med en parameter:
+  href="productlist.html?season=${season.season}"
+  → fx productlist.html?season=Summer
+
+list.js læser den med:
+  param.get("season")
+
+Ordet "season" skal være stavet PRÆCIS ens begge steder.
+
+----------------------------------------------------------
+HVIS SIDEN ER TOM
+----------------------------------------------------------
+1. Rød fejl i konsollen?        → læs den
+2. Står der ikke "hej"?         → index.js er ikke forbundet (tjek <script>)
+3. seasonsList er null?         → klassen er stavet forkert, eller div'en er udkommenteret
+4. Mangler defer på <script>?
+5. Mangler ` til sidst i kortet?
+6. Viser browseren en gammel fil? → Cmd + Shift + R
+==========================================================
+*/

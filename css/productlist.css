@@ -195,3 +195,23 @@ img {
     padding: 5rem; /* Mere luft på store skærme */
   }
 }
+
+.active_btn {
+  background-color: var(--primary-cta-farve);
+}
+
+button {
+  background-color: var(--lys-gul-farve);
+  border: none;
+  margin-left: 3rem;
+  padding: 1rem 2rem;
+  margin-top: 2rem;
+  font-size: var(--p);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--primary-cta-farve);
+  color: var(--hvid-farve);
+}

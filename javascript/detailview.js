@@ -41,6 +41,11 @@ function loadData(url) {
 // innerHTML = HTML'en inde i kassen
 // += = læg ny HTML til det, der allerede står der
 // ${detail.feltnavn} = sæt data fra produktet ind i HTML'en
+//
+// NYT: UDSALGSPRIS
+// ? : = en kort if/else: "betingelse ? hvis ja : hvis nej"
+// detail.discount ? ... : "" → har produktet rabat, vises udsalgsprisen, ellers ingenting
+// Den normale pris vises altid, og har produktet rabat, står rabat-% efter, fx "1595 kr -28%"
 function showDetails(detail) {
   console.log("detail", detail);
 
@@ -52,7 +57,8 @@ function showDetails(detail) {
                     <div class="card_indhold">
                         <h3 class="produkt_titel">${detail.productdisplayname}</h3>
                         <p class="produkt_brand">${detail.brandname} - ${detail.articletype}</p>
-                        <p class="produkt_pris">${detail.price} kr</p>
+                        ${detail.discount ? "<p class='produkt_pris'>" + getDiscountPrice(detail.price, detail.discount) + " kr</p>" : ""}
+                        <p class="produkt_pris">${detail.price} kr ${detail.discount ? " <em>-" + detail.discount + "%</em>" : ""}</p>
 
                         <span class="streg"></span>
 
@@ -77,6 +83,20 @@ function showDetails(detail) {
 // En funktion gør ingenting, før den bliver kaldt
 // Kæden: loadData → fetch → json → showDetails → produktet står på siden
 loadData(detailURL);
+
+// NYT: REGN PRISEN EFTER RABAT
+// Samme funktion som i list.js. Den skal stå her også,
+// fordi product.html kun indlæser detailview.js og ikke list.js
+// return = sender resultatet tilbage til der, hvor funktionen blev kaldt
+// Math.round = runder af til et helt tal
+// Eksempel: 1595 kr og 28 % rabat
+//   100 - 28 = 72
+//   1595 * 72 = 114840
+//   114840 / 100 = 1148,4 → 1148 kr
+function getDiscountPrice(origianlPrice, discount) {
+  return Math.round((origianlPrice * (100 - discount)) / 100);
+}
+
 /*
 ==========================================================
   DETAILVIEW.JS: FRA STATISK TIL DYNAMISK, 7 TRIN
@@ -137,7 +157,7 @@ ${selectedId} = id'et fra adressen (se trin 7)
 
 Svaret starter med { → ÉT produkt → INGEN forEach, men detail.feltnavn
 Felter jeg bruger: id, productdisplayname, brandname, articletype,
-price, basecolour
+price, discount, basecolour
 
 ----------------------------------------------------------
 TRIN 5: HENT DATA (motoren)
@@ -165,7 +185,8 @@ TRIN 6: KOPIÉR KORTET IND I JS OG SÆT DATA IND
             <div class="card_indhold">
                 <h3 class="produkt_titel">${detail.productdisplayname}</h3>
                 <p class="produkt_brand">${detail.brandname} - ${detail.articletype}</p>
-                <p class="produkt_pris">${detail.price} kr</p>
+                ${detail.discount ? "<p class='produkt_pris'>" + getDiscountPrice(detail.price, detail.discount) + " kr</p>" : ""}
+                <p class="produkt_pris">${detail.price} kr ${detail.discount ? " <em>-" + detail.discount + "%</em>" : ""}</p>
                 <div class="farve_info">
                     <p>Farve: ${detail.basecolour}</p>
                 </div>
@@ -183,8 +204,18 @@ TRIN 6: KOPIÉR KORTET IND I JS OG SÆT DATA IND
   Tuva top, Women - koral      →  ${detail.productdisplayname}
   FashionRus - Top             →  ${detail.brandname} - ${detail.articletype}
   148 kr                       →  ${detail.price} kr
+  (ingen udsalgspris)          →  ${detail.discount ? ... getDiscountPrice(...) ... : ""}
   Farve: Rust red              →  Farve: ${detail.basecolour}
   img/Skærmbillede....png      →  https://kea-alt-del.dk/t7/images/webp/640/${detail.id}.webp
+
+? : = kort if/else: "betingelse ? hvis ja : hvis nej"
+  ${detail.discount ? ... : ""}  → rabat? så vis udsalgspris og rabat-%, ellers intet
+
+Prisen efter rabat (samme funktion som i list.js, den skal stå i begge filer):
+  function getDiscountPrice(origianlPrice, discount) {
+    return Math.round((origianlPrice * (100 - discount)) / 100);
+  }
+  fx 1595 kr og 28 %: 100 - 28 = 72 → 1595 * 72 = 114840 → / 100 = 1148 kr
 
 Klasserne er de samme som i HTML'en, så CSS'en virker stadig.
 ${ } virker KUN i backticks ` `, ikke i " ".
@@ -207,8 +238,9 @@ HVIS SIDEN ER TOM
 2. selectedId er null?             → siden er åbnet uden ?id= i adressen
 3. product_detail er null?         → klassen er stavet forkert, eller div'en er udkommenteret
 4. Billedet havner i logoet?       → brug querySelector(".card_img"), ikke querySelector("img")
-5. Mangler defer på <script>?
-6. Mangler ` til sidst i kortet?
-7. Viser browseren en gammel fil?  → Cmd + Shift + R
+5. getDiscountPrice is not defined? → funktionen mangler nederst i detailview.js
+6. Mangler defer på <script>?
+7. Mangler ` til sidst i kortet?
+8. Viser browseren en gammel fil?  → Cmd + Shift + R
 ==========================================================
 */

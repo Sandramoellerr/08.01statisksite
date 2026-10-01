@@ -76,6 +76,12 @@ function showData(data) {
 STATISK  = jeg har selv skrevet alt indholdet i HTML'en
 DYNAMISK = JavaScript henter indholdet fra et API og skriver HTML'en for mig
 
+Det til højre kommer ind i det til venstre.
+
+seasonsList.innerHTML = myInnerHTML;
+//      venstre      ⬅     højre
+//    (modtager)          (bliver sendt)
+
 ----------------------------------------------------------
 TRIN 1: BYG SIDEN STATISK FØRST
 ----------------------------------------------------------
@@ -187,4 +193,36 @@ HVIS SIDEN ER TOM
 5. Mangler ` til sidst i kortet?
 6. Viser browseren en gammel fil? → Cmd + Shift + R
 ==========================================================
+
+
+
+Du har gennemgået hele index.js!
+
+Her er det hele med dine egne ord (rettet lidt til):
+
+"use strict": JavaScript siger til, når der er fejl, i stedet for at ignorere dem.
+
+console.log("hej"): tester, at JS-filen er forbundet til HTML'en.
+
+const productUrl = "...": gemmer API-adressen, så den kan bruges senere.
+
+document.querySelector(".grid_1-1-1-1"): finder kassen i HTML'en, så JavaScript kan sætte kort ind i den.
+
+getData(): sætter funktionen i gang. Uden den sker der ingenting.
+
+fetch → .json() → showData: henter data, pakker JSON ud, så JavaScript forstår det, og sender det videre.
+
+innerHTML = "": tømmer kassen, så den er klar.
+
+let myInnerHTML = "": en tom pose, der skal fyldes. let, fordi den bliver ændret.
+
+forEach((season) => ...): går igennem sæsonerne én ad gangen, til der ikke er flere. season er bare et navn.
+
++= og backticks: lægger hvert kort til uden at overskrive. Backticks gør, at ${ } virker.
+
+${season.season} kollektion: bliver til fx "Fall kollektion".
+
+href="productlist.html?season=...": sender sæsonen videre til produktlisten.
+
+seasonsList.innerHTML = myInnerHTML: det til højre kommer ind i det til venstre, altså alle kort ind på siden på én gang.
 */
